@@ -24,6 +24,58 @@ router.get('/new', (req, res)=>{
     res.render('prehistoric_creatures/new.ejs')
 })
 
+// GET /dinosaurs/edit/:id -- a view of a form to edit a specific dino @ :id
+router.get('/edit/:id', (req, res) => {
+    // get the dino data, render edit form 
+    // action to our put rout 
+    let animals = fs.readFileSync('./prehistoric_creatures.json')
+    // need to parse the json data to strings 
+    let animalData = JSON.parse(animals)
+    
+    let animalIndex= req.params.id
+    res.render('prehistoric_creatures/edit', {
+        animal: animalData[animalIndex],
+        animalID: animalIndex
+    })
+})
+
+// PUT /dinosaurs/:id -- update a dino @ :id in the database 
+router.put('/:id', (req, res) =>{
+    // get the dinos from the dino json
+    let animals = fs.readFileSync('./prehistoric_creatures.json')
+    // need to parse the json data to strings 
+    let animalData = JSON.parse(animals)
+    let animalIndex= req.params.id
+    // update the dino based on the index and the req.body
+    animalData[animalIndex].type = req.body.type
+    //req.params = which dino
+    // req.body = dino data to update
+    animalData[animalIndex].img_url = req.body.img_url
+
+    // write the json file
+    fs.writeFileSync('./prehistoric_creatures.json', JSON.stringify(animalData) )
+    
+    // redirect to some place that has interesting data 
+    res.redirect('/prehistoric_creatures')
+
+})
+// DELETE /dinosaurs/:id -- DESTROY a dino @ :id 
+router.delete('/:id', (req,res) =>{
+    // get the dinos from the dino json 
+    let animalIndex = req.params.id
+    let animals = fs.readFileSync('./prehistoric_creatures.json')
+    // need to parse the json data to strings 
+    let animalData = JSON.parse(animals)
+    // splice dino out of the array from req.params.id
+    animalData.splice(animalIndex, 1)
+    // save the dino json
+    // write the json file
+    fs.writeFileSync('./prehistoric_creatures.json', JSON.stringify(animalData) )
+    
+    // redirect to some place that has interesting data 
+    res.redirect('/prehistoric_creatures')
+})
+
 router.get('/:id', (req, res)=>{
     let animalIndex = req.params.id
     console.log(`The creature you're searching for is ${animalIndex}`)

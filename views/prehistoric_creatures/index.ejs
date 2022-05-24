@@ -5,8 +5,16 @@
 </form>
 
 
+
+
 <ul>
-    <% myPreCreatures.forEach(animal => { %>
-    <li><%= animal.type %>    </li> 
+    <% myPreCreatures.forEach((animal, index) => { %>
+    <li>
+        <%= animal.type %> 
+        <a href="/prehistoric_creatures/edit/<%= index %>">Edit</a>
+        <form method="POST" action="/prehistoric_creatures/<%= index %>/?_method=DELETE">
+            <button type="submit">Delete</button>
+        </form>
+    </li> 
     <% }) %> 
 </ul>
